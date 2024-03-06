@@ -11,7 +11,7 @@ node {
        sh 'npm test'
      }
    }
-   ```groovy
+
     stage('Docker Build & Push') {
     steps {
         withCredentials([rosario172mariposa12(credentialsId: 'docker-hub', usernameVariable: 'rosario172', passwordVariable: 'mariposa12')]) {
@@ -21,8 +21,6 @@ node {
                 }
             }
         }
-    }
-}
-```
-
+     }
+  }
 }
