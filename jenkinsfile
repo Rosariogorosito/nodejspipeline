@@ -1,24 +1,20 @@
 node {
    def gitcommit
-   stage('Verificacion SCM') {
+   stage('Verificación SCM') {
      checkout scm
-     sh "git rev-parse --short HEAD > .git/commit-id"
+     sh "git rev-parse --short HEAD > .git/commit-id"                        
      gitcommit = readFile('.git/commit-id').trim()
    }
    stage('test') {
-     def contenedortest = docker.image('node:4.6')
-     contenedortest.pull()
-     contenedortest.inside {
+     nodejs(nodeJSInstallationName: 'nodejs') {
        sh 'npm install --only=dev'
        sh 'npm test'
      }
-   }                   
-   steps {
-     dockerBuildAndPublish {
-            docker.withRegistry('https://registry.hub.docker.com')
-            registryCredentials('docker-hub') {
-            def nuestraapp = docker.build("rosario172/nodejsapp", ".")
-            nuestraapp.push()
-            }
-        }
+   }
+   stage('Docker Build & Push') {
+     docker.withRegistry('https://registry.hub.docker.com', 'docker-hub') {
+      def nuestraapp = docker.build("macloujulian/nodejsapp:${gitcommit}", ".")
+      nuestraapp.push()
+     }
+   }
 }
