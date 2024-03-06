@@ -11,10 +11,18 @@ node {
        sh 'npm test'
      }
    }
-   stage('Docker Build & Push') {
-     docker.withRegistry('https://registry.hub.docker.com', 'docker-hub') {
-      def nuestraapp = docker.build("rosario172/nodejsapp:${gitcommit}", ".")
-      nuestraapp.push()
-     }
-   }
+   ```groovy
+    stage('Docker Build & Push') {
+    steps {
+        withCredentials([rosario172mariposa12(credentialsId: 'docker-hub', usernameVariable: 'rosario172', passwordVariable: 'mariposa12')]) {
+            script {
+                docker.withRegistry('https://registry.hub.docker.com', 'docker-hub') {
+                    // docker.build('nombre-de-tu-imagen').push('tag-de-tu-imagen')
+                }
+            }
+        }
+    }
+}
+```
+
 }
